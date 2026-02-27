@@ -96,5 +96,19 @@ public class User {
 
         System.out.println("Contact not found!");
     }
+ // Deletes contact by ID
+    public void deleteContactById(String id) {
+
+        for (int i = 0; i < contacts.size(); i++) {
+
+            if (contacts.get(i).getId().equals(id)) {
+                contacts.remove(i);
+                System.out.println("Contact Deleted Successfully!");
+                return;
+            }
+        }
+
+        System.out.println("Contact Not Found!");
+    }
     
 }
