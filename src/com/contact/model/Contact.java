@@ -41,6 +41,25 @@ public class Contact {
         return createdAt;
     }
 
+    // Setter with validation
+    public void setName(String name) {
+        if (name != null && !name.isEmpty()) {
+            this.name = name;
+        }
+    }
+
+    public void setPhone(String phone) {
+        if (phone != null && phone.matches("\\d{10}")) {
+            this.phone = phone;
+        }
+    }
+
+    public void setEmail(String email) {
+        if (email != null && email.contains("@")) {
+            this.email = email;
+        }
+    }
+
     public void display() {
         System.out.println("ID: " + id);
         System.out.println("Name: " + name);

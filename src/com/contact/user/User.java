@@ -96,6 +96,24 @@ public class User {
 
         System.out.println("Contact not found!");
     }
+ // Edit contact by ID
+    public void editContact(String id, String newName, String newPhone, String newEmail) {
+
+        for (Contact c : contacts) {
+
+            if (c.getId().equals(id)) {
+
+                c.setName(newName);
+                c.setPhone(newPhone);
+                c.setEmail(newEmail);
+
+                System.out.println("Contact Updated Successfully!");
+                return;
+            }
+        }
+
+        System.out.println("Contact Not Found!");
+    }
  // Deletes contact by ID
     public void deleteContactById(String id) {
 
