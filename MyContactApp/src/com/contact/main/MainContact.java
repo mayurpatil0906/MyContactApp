@@ -24,6 +24,7 @@ public class MainContact {
             int choice = sc.nextInt();
             sc.nextLine();
 
+            // ================= REGISTER =================
             if (choice == 1) {
 
                 System.out.println("\n--- User Registration ---");
@@ -45,31 +46,52 @@ public class MainContact {
 
                 manager.registerUser(type, name, email, password);
 
-            } else if (choice == 2) {
+            }
+
+            // ================= LOGIN =================
+            else if (choice == 2) {
 
                 System.out.println("\n--- Login ---");
+                System.out.println("1. Basic Login");
+                System.out.println("2. OAuth Login");
+                System.out.print("Select Login Type: ");
+
+                int loginType = sc.nextInt();
+                sc.nextLine();
 
                 System.out.print("Enter Email: ");
                 String email = sc.nextLine();
 
-                System.out.print("Enter Password: ");
-                String password = sc.nextLine();
+                User loggedInUser = null;
 
-                User loggedInUser = manager.login(email, password);
+                if (loginType == 1) {
 
+                    System.out.print("Enter Password: ");
+                    String password = sc.nextLine();
+
+                    loggedInUser = manager.loginBasic(email, password);
+
+                } else if (loginType == 2) {
+
+                    System.out.print("Enter OAuth Token: ");
+                    String token = sc.nextLine();
+
+                    loggedInUser = manager.loginOAuth(email, token);
+                }
+
+                // ================= AFTER LOGIN =================
                 if (loggedInUser != null) {
 
-                    System.out.println("Login Successful!");
-
-                    
                     while (true) {
 
                         System.out.println("\n--- Welcome " + loggedInUser.getName() + " ---");
                         System.out.println("1. Update Name");
                         System.out.println("2. Change Password");
                         System.out.println("3. Add Contact");
-                        System.out.println("4. View Contacts");
-                        System.out.println("5. Logout");
+                        System.out.println("4. View All Contacts");
+                        System.out.println("5. View Contact By ID");
+                        
+                        System.out.println("6. Logout");
                         System.out.print("Select Option: ");
 
                         int opt = sc.nextInt();
@@ -104,16 +126,23 @@ public class MainContact {
                             loggedInUser.viewContacts();
 
                         } else if (opt == 5) {
+                            System.out.print("Enter Contact ID: ");
+                            String id = sc.nextLine();
+                            loggedInUser.viewContactById(id);
+
+                        }else if (opt == 6) {
                             System.out.println("Logged Out Successfully!");
                             break;
                         }
                     }
 
                 } else {
-                    System.out.println("Invalid Credentials!");
+                    System.out.println("Login Failed!");
                 }
+            }
 
-            } else if (choice == 3) {
+            // ================= EXIT =================
+            else if (choice == 3) {
                 System.out.println("Thank You for using Contact App!");
                 break;
             }
