@@ -92,8 +92,10 @@ public class MainContact {
                         System.out.println("5. View Contact By ID");
                         System.out.println("6. Edit Contact");
                         System.out.println("7. Delete Contact");
-                        System.out.println("8. Logout");
-                        System.out.print("Select Option: ");
+                        System.out.println("8. Bulk Delete by Email Domain");
+                        System.out.println("9. Bulk Update Phone Prefix");
+                        System.out.println("10. Bulk Export (Last 5 Minutes)");
+                        System.out.println("11. Logout");
 
                         int opt = sc.nextInt();
                         sc.nextLine();
@@ -153,6 +155,39 @@ public class MainContact {
 
                             loggedInUser.deleteContactById(id);
                         }else if (opt == 8) {
+
+                            System.out.print("Enter Email Domain (example: @gmail.com): ");
+                            String domain = sc.nextLine();
+
+                            loggedInUser.bulkDeleteByEmailDomain(domain);
+
+                        }
+                        else if (opt == 9) {
+
+                            System.out.print("Enter Old Phone Prefix (example: 98): ");
+                            String oldPrefix = sc.nextLine();
+
+                            System.out.print("Enter New Phone Prefix (example: 99): ");
+                            String newPrefix = sc.nextLine();
+
+                            loggedInUser.bulkUpdatePhonePrefix(oldPrefix, newPrefix);
+
+                        }
+                        else if (opt == 10) {
+
+                            System.out.println("Exporting contacts created in last 5 minutes...");
+
+                            java.util.List<com.contact.model.Contact> exported =
+                                    loggedInUser.bulkExportAfter(java.time.LocalDateTime.now().minusMinutes(5));
+
+                            for (com.contact.model.Contact c : exported) {
+                                c.display();
+                                System.out.println("--------------------");
+                            }
+
+                        }
+                        else if (opt == 11) {
+
                             System.out.println("Logged Out Successfully!");
                             break;
                         }

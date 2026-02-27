@@ -128,5 +128,52 @@ public class User {
 
         System.out.println("Contact Not Found!");
     }
+ // 🔹 BULK DELETE
+    public void bulkDeleteByEmailDomain(String domain) {
+
+        for (int i = 0; i < contacts.size(); i++) {
+
+            if (contacts.get(i).getEmail().endsWith(domain)) {
+                contacts.remove(i);
+                i--;
+            }
+        }
+
+        System.out.println("Bulk delete completed for domain: " + domain);
+    }
+
+    // 🔹 BULK UPDATE
+    public void bulkUpdatePhonePrefix(String oldPrefix, String newPrefix) {
+
+        for (Contact c : contacts) {
+
+            if (c.getPhone().startsWith(oldPrefix)) {
+
+                String newPhone =
+                        newPrefix + c.getPhone().substring(oldPrefix.length());
+
+                c.setPhone(newPhone);
+            }
+        }
+
+        System.out.println("Bulk phone update completed.");
+    }
+
+    // 🔹 BULK EXPORT
+    public List<Contact> bulkExportAfter(java.time.LocalDateTime time) {
+
+        List<Contact> result = new ArrayList<>();
+
+        for (Contact c : contacts) {
+            if (c.getCreatedAt().isAfter(time)) {
+                result.add(c);
+            }
+        }
+
+        return result;
+    }
     
+    
+    
+
 }
