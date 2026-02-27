@@ -90,7 +90,8 @@ public class MainContact {
                         System.out.println("3. Add Contact");
                         System.out.println("4. View All Contacts");
                         System.out.println("5. View Contact By ID");
-                        System.out.println("6. Logout");
+                        System.out.println("6. Delete Contact");
+                        System.out.println("7. Logout");
                         System.out.print("Select Option: ");
 
                         int opt = sc.nextInt();
@@ -130,6 +131,12 @@ public class MainContact {
                             loggedInUser.viewContactById(id);
 
                         } else if (opt == 6) {
+
+                            System.out.print("Enter Contact ID to Delete: ");
+                            String id = sc.nextLine();
+
+                            loggedInUser.deleteContactById(id);
+                        }else if (opt == 7) {
                             System.out.println("Logged Out Successfully!");
                             break;
                         }
