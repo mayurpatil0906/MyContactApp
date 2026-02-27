@@ -1,71 +1,93 @@
 package com.contact.service;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import com.contact.user.FreeUser;
 import com.contact.user.PremiumUser;
 import com.contact.user.User;
 
 public class ContactManager {
 
-	private List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
+    // ================= REGISTER =================
+    public void registerUser(int type, String name, String email, String password) {
 
-	public void registerUser(int type, String name, String email, String password) {
+        if (!isValidEmail(email)) {
+            System.out.println("Invalid Email Format!");
+            return;
+        }
 
+        if (password.length() < 4) {
+            System.out.println("Password must be at least 4 characters!");
+            return;
+        }
 
-		if (!isValidEmail(email)) {
-			System.out.println("Invalid Email Format!");
-			return;
-		}
+        for (User u : users) {
+            if (u.getEmail().equalsIgnoreCase(email)) {
+                System.out.println("User already exists with this email!");
+                return;
+            }
+        }
 
+        User newUser;
 
-		if (password.length() < 4) {
-			System.out.println("Password must be at least 4 characters!");
-			return;
-		}
+        if (type == 1) {
+            newUser = new FreeUser(name, email, password);
+        } else {
+            newUser = new PremiumUser(name, email, password);
+        }
 
+        users.add(newUser);
 
-		for (User u : users) {
-			if (u.getEmail().equalsIgnoreCase(email)) {
-				System.out.println("User already exists with this email!");
-				return;
-			}
-		}
+        System.out.println(newUser.getUserType() + " Registered Successfully!");
+    }
 
-		User newUser;
+    // ================= BASIC LOGIN =================
+    public User loginBasic(String email, String password) {
 
-		if (type == 1) {
-			newUser = new FreeUser(name, email, password);
-		} else {
-			newUser = new PremiumUser(name, email, password);
-		}
+        for (User u : users) {
+            if (u.getEmail().equalsIgnoreCase(email) &&
+                u.checkPassword(password)) {
 
-		users.add(newUser);
+                System.out.println("Login Successful!");
+                return u;
+            }
+        }
 
-		System.out.println(newUser.getUserType() + " Registered Successfully!");
-	}
-	public User login(String email, String password) {
+        System.out.println("Invalid Email or Password!");
+        return null;
+    }
 
-	    for (User u : users) {
-	        if (u.getEmail().equalsIgnoreCase(email) &&
-	            u.checkPassword(password)) {
+    // ================= OAUTH LOGIN =================
+    public User loginOAuth(String email, String token) {
 
-	            System.out.println("Login Successful!");
-	            return u;
-	        }
-	    }
+        // simple token check
+        if (!token.equals("OAUTH123")) {
+            System.out.println("Invalid OAuth Token!");
+            return null;
+        }
 
-	    System.out.println("Invalid Credentials!");
-	    return null;
-	}
+        for (User u : users) {
+            if (u.getEmail().equalsIgnoreCase(email)) {
 
+                System.out.println("OAuth Login Successful!");
+                return u;
+            }
+        }
 
-	private boolean isValidEmail(String email) {
-		String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-		return email.matches(emailRegex);
-	}
+        System.out.println("User not found!");
+        return null;
+    }
 
-	public List<User> getUsers() {
-		return users;
-	}
+    // ================= EMAIL VALIDATION =================
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email.matches(emailRegex);
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
 }
