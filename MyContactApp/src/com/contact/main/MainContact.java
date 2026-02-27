@@ -1,0 +1,124 @@
+package com.contact.main;
+
+import java.util.Scanner;
+
+import com.contact.model.Contact;
+import com.contact.service.ContactManager;
+import com.contact.user.User;
+
+public class MainContact {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        ContactManager manager = new ContactManager();
+
+        while (true) {
+
+            System.out.println("\n==== CONTACT APPLICATION ====");
+            System.out.println("1. Register");
+            System.out.println("2. Login");
+            System.out.println("3. Exit");
+            System.out.print("Select Option: ");
+
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            if (choice == 1) {
+
+                System.out.println("\n--- User Registration ---");
+                System.out.println("1. Free User");
+                System.out.println("2. Premium User");
+                System.out.print("Select User Type: ");
+
+                int type = sc.nextInt();
+                sc.nextLine();
+
+                System.out.print("Enter Name: ");
+                String name = sc.nextLine();
+
+                System.out.print("Enter Email: ");
+                String email = sc.nextLine();
+
+                System.out.print("Enter Password: ");
+                String password = sc.nextLine();
+
+                manager.registerUser(type, name, email, password);
+
+            } else if (choice == 2) {
+
+                System.out.println("\n--- Login ---");
+
+                System.out.print("Enter Email: ");
+                String email = sc.nextLine();
+
+                System.out.print("Enter Password: ");
+                String password = sc.nextLine();
+
+                User loggedInUser = manager.login(email, password);
+
+                if (loggedInUser != null) {
+
+                    System.out.println("Login Successful!");
+
+                    
+                    while (true) {
+
+                        System.out.println("\n--- Welcome " + loggedInUser.getName() + " ---");
+                        System.out.println("1. Update Name");
+                        System.out.println("2. Change Password");
+                        System.out.println("3. Add Contact");
+                        System.out.println("4. View Contacts");
+                        System.out.println("5. Logout");
+                        System.out.print("Select Option: ");
+
+                        int opt = sc.nextInt();
+                        sc.nextLine();
+
+                        if (opt == 1) {
+                            System.out.print("Enter New Name: ");
+                            String newName = sc.nextLine();
+                            loggedInUser.setName(newName);
+                            System.out.println("Name Updated Successfully!");
+
+                        } else if (opt == 2) {
+                            System.out.print("Enter New Password: ");
+                            String newPass = sc.nextLine();
+                            loggedInUser.setPassword(newPass);
+                            System.out.println("Password Updated Successfully!");
+
+                        } else if (opt == 3) {
+                            System.out.print("Enter Contact Name: ");
+                            String cname = sc.nextLine();
+
+                            System.out.print("Enter Phone: ");
+                            String phone = sc.nextLine();
+
+                            System.out.print("Enter Email: ");
+                            String cemail = sc.nextLine();
+
+                            loggedInUser.addContact(new Contact(cname, phone, cemail));
+                            System.out.println("Contact Added Successfully!");
+
+                        } else if (opt == 4) {
+                            loggedInUser.viewContacts();
+
+                        } else if (opt == 5) {
+                            System.out.println("Logged Out Successfully!");
+                            break;
+                        }
+                    }
+
+                } else {
+                    System.out.println("Invalid Credentials!");
+                }
+
+            } else if (choice == 3) {
+                System.out.println("Thank You for using Contact App!");
+                break;
+            }
+        }
+
+        sc.close();
+    }
+}
