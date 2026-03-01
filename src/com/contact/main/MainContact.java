@@ -1,6 +1,7 @@
 package com.contact.main;
 
 import java.util.Scanner;
+import java.util.List;
 
 import com.contact.model.Contact;
 import com.contact.service.ContactManager;
@@ -95,7 +96,10 @@ public class MainContact {
                         System.out.println("8. Bulk Delete by Email Domain");
                         System.out.println("9. Bulk Update Phone Prefix");
                         System.out.println("10. Bulk Export (Last 5 Minutes)");
-                        System.out.println("11. Logout");
+                        System.out.println("11. Search by Name");
+                        System.out.println("12. Search by Phone");
+                        System.out.println("13. Search by Email");
+                        System.out.println("14. Logout");
 
                         int opt = sc.nextInt();
                         sc.nextLine();
@@ -185,8 +189,53 @@ public class MainContact {
                                 System.out.println("--------------------");
                             }
 
+                        }else if (opt == 11) {
+
+                            System.out.print("Enter Name to Search: ");
+                            String name = sc.nextLine();
+
+                            List<Contact> results = loggedInUser.searchByName(name);
+
+                            if (results.isEmpty()) {
+                                System.out.println("No contacts found!");
+                            } else {
+                                for (Contact c : results) {
+                                    c.display();
+                                    System.out.println("--------------------");
+                                }
+                            }
+                        }else if (opt == 12) {
+
+                            System.out.print("Enter Phone to Search: ");
+                            String phone = sc.nextLine();
+
+                            List<Contact> results = loggedInUser.searchByPhone(phone);
+
+                            if (results.isEmpty()) {
+                                System.out.println("No contacts found!");
+                            } else {
+                                for (Contact c : results) {
+                                    c.display();
+                                    System.out.println("--------------------");
+                                }
+                            }
+                        }else if (opt == 13) {
+
+                            System.out.print("Enter Email to Search: ");
+                            String emailSearch = sc.nextLine();
+
+                            List<Contact> results = loggedInUser.searchByEmail(emailSearch);
+
+                            if (results.isEmpty()) {
+                                System.out.println("No contacts found!");
+                            } else {
+                                for (Contact c : results) {
+                                    c.display();
+                                    System.out.println("--------------------");
+                                }
+                            }
                         }
-                        else if (opt == 11) {
+                        else if (opt == 14) {
 
                             System.out.println("Logged Out Successfully!");
                             break;

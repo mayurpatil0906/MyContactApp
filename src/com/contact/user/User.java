@@ -172,7 +172,47 @@ public class User {
 
         return result;
     }
-    
+    public List<Contact> searchByName(String name) {
+
+        List<Contact> result = new ArrayList<>();
+
+        for (Contact c : contacts) {
+            if (c.getName().equalsIgnoreCase(name) ||
+                c.getName().contains(name)) {
+                result.add(c);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Contact> searchByPhone(String phone) {
+
+        List<Contact> result = new ArrayList<>();
+
+        for (Contact c : contacts) {
+            if (c.getPhone().contains(phone)) {
+                result.add(c);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Contact> searchByEmail(String email) {
+
+        List<Contact> result = new ArrayList<>();
+
+        for (Contact c : contacts) {
+            if (c.getEmail().equalsIgnoreCase(email) ||
+                c.getEmail().contains(email)) {
+                result.add(c);
+            }
+        }
+
+        return result;
+    }
+
     
     
 
