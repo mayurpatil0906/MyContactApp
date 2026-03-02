@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import com.contact.model.Tag;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.contact.model.Contact;
 import com.contact.filter.ContactFilter;
@@ -248,5 +251,38 @@ public class User {
         });
 
         System.out.println("Sorted by frequently contacted.");
+    }
+    private Set<Tag> userTags = new HashSet<>();
+    public void createTag(String tagName) {
+
+        Tag tag = new Tag(tagName);
+
+        if (userTags.add(tag)) {
+            System.out.println("Tag created successfully!");
+        } else {
+            System.out.println("Tag already exists!");
+        }
+    }
+    public void viewTags() {
+
+        if (userTags.isEmpty()) {
+            System.out.println("No tags created yet!");
+            return;
+        }
+
+        System.out.println("Your Tags:");
+        for (Tag t : userTags) {
+            System.out.println("- " + t.getName());
+        }
+    }
+    public void deleteTag(String tagName) {
+
+        Tag tag = new Tag(tagName);
+
+        if (userTags.remove(tag)) {
+            System.out.println("Tag deleted successfully!");
+        } else {
+            System.out.println("Tag not found!");
+        }
     }
 }

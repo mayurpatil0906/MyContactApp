@@ -104,7 +104,10 @@ public class MainContact {
                         System.out.println("12. Search by Phone");
                         System.out.println("13. Search by Email");
                         System.out.println("14. Apply filter");
-                        System.out.println("15. Logout");
+                        System.out.println("15. Create Tag");
+                        System.out.println("16. View Tags");
+                        System.out.println("17. Delete Tags");
+                        System.out.println("18. Logout");
 
                         int opt = sc.nextInt();
                         sc.nextLine();
@@ -286,8 +289,27 @@ public class MainContact {
                             } else {
                                 System.out.println("No contacts found.");
                             }
+                        }else if (opt == 15) {
+
+                            System.out.print("Enter Tag Name: ");
+                            String tagName = sc.nextLine();
+
+                            loggedInUser.createTag(tagName);
                         }
-                        else if (opt == 15) {
+
+                        else if (opt == 16) {
+
+                            loggedInUser.viewTags();
+                        }
+
+                        else if (opt == 17) {
+
+                            System.out.print("Enter Tag Name to Delete: ");
+                            String tagName = sc.nextLine();
+
+                            loggedInUser.deleteTag(tagName);
+                        }
+                        else if (opt == 18) {
 
                             System.out.println("Logged Out Successfully!");
                             break;

@@ -72,6 +72,7 @@ public class Contact {
     public void incrementContactCount() {
         contactCount++;
     }
+    
 
     // ================= DISPLAY =================
 
