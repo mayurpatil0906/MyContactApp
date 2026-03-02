@@ -4,8 +4,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.contact.model.Contact;
+import com.contact.filter.ContactFilter;
 
 public class User {
 
@@ -20,6 +23,8 @@ public class User {
         this.passwordHash = hashPassword(password);
     }
 
+    // ================= PASSWORD HASHING =================
+
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -33,31 +38,28 @@ public class User {
             throw new RuntimeException("Error hashing password");
         }
     }
-//to check password 
+
     public boolean checkPassword(String password) {
         return passwordHash.equals(hashPassword(password));
     }
-//getter method to get email
-    public String getEmail() {
-        return email;
-    }
-  //getter method to get name
-    public String getName() {
-        return name;
-    }
-  //getter method to set name
+
+    // ================= BASIC GETTERS & SETTERS =================
+
+    public String getEmail() { return email; }
+    public String getName() { return name; }
+
     public void setName(String name) {
         this.name = name;
     }
-  //getter method to set strong password
+
     public void setPassword(String newPassword) {
         this.passwordHash = hashPassword(newPassword);
     }
-//method to add contact
+
     public void addContact(Contact contact) {
         contacts.add(contact);
     }
-//list to get all contacts
+
     public List<Contact> getContacts() {
         return contacts;
     }
@@ -65,7 +67,9 @@ public class User {
     public String getUserType() {
         return "Normal User";
     }
-    // to view all contacts
+
+    // ================= VIEW CONTACTS =================
+
     public void viewContacts() {
 
         if (contacts.isEmpty()) {
@@ -83,12 +87,11 @@ public class User {
             System.out.println("-----------------------");
         }
     }
-    //after adding we will get the id using that id contact will be shown
+
     public void viewContactById(String id) {
 
         for (Contact c : contacts) {
             if (c.getId().equals(id)) {
-                System.out.println("\n--- Contact Details ---");
                 c.display();
                 return;
             }
@@ -96,11 +99,12 @@ public class User {
 
         System.out.println("Contact not found!");
     }
- // Edit contact by ID
+
+    // ================= EDIT & DELETE =================
+
     public void editContact(String id, String newName, String newPhone, String newEmail) {
 
         for (Contact c : contacts) {
-
             if (c.getId().equals(id)) {
 
                 c.setName(newName);
@@ -114,11 +118,10 @@ public class User {
 
         System.out.println("Contact Not Found!");
     }
- // Deletes contact by ID
+
     public void deleteContactById(String id) {
 
         for (int i = 0; i < contacts.size(); i++) {
-
             if (contacts.get(i).getId().equals(id)) {
                 contacts.remove(i);
                 System.out.println("Contact Deleted Successfully!");
@@ -128,7 +131,9 @@ public class User {
 
         System.out.println("Contact Not Found!");
     }
- // 🔹 BULK DELETE
+
+    // ================= BULK OPERATIONS =================
+
     public void bulkDeleteByEmailDomain(String domain) {
 
         for (int i = 0; i < contacts.size(); i++) {
@@ -142,7 +147,6 @@ public class User {
         System.out.println("Bulk delete completed for domain: " + domain);
     }
 
-    // 🔹 BULK UPDATE
     public void bulkUpdatePhonePrefix(String oldPrefix, String newPrefix) {
 
         for (Contact c : contacts) {
@@ -159,7 +163,6 @@ public class User {
         System.out.println("Bulk phone update completed.");
     }
 
-    // 🔹 BULK EXPORT
     public List<Contact> bulkExportAfter(java.time.LocalDateTime time) {
 
         List<Contact> result = new ArrayList<>();
@@ -172,13 +175,15 @@ public class User {
 
         return result;
     }
+
+    // ================= SEARCH (UC-09) =================
+
     public List<Contact> searchByName(String name) {
 
         List<Contact> result = new ArrayList<>();
 
         for (Contact c : contacts) {
-            if (c.getName().equalsIgnoreCase(name) ||
-                c.getName().contains(name)) {
+            if (c.getName().toLowerCase().contains(name.toLowerCase())) {
                 result.add(c);
             }
         }
@@ -204,8 +209,7 @@ public class User {
         List<Contact> result = new ArrayList<>();
 
         for (Contact c : contacts) {
-            if (c.getEmail().equalsIgnoreCase(email) ||
-                c.getEmail().contains(email)) {
+            if (c.getEmail().toLowerCase().contains(email.toLowerCase())) {
                 result.add(c);
             }
         }
@@ -213,7 +217,36 @@ public class User {
         return result;
     }
 
-    
-    
+    // ================= UC-10 FILTERING =================
 
+    public List<Contact> applyFilter(ContactFilter filter) {
+
+        List<Contact> result = new ArrayList<>();
+
+        for (Contact c : contacts) {
+            if (filter.apply(c)) {
+                result.add(c);
+            }
+        }
+
+        return result;
+    }
+
+    // ================= SORT BY FREQUENCY =================
+
+    public void sortByFrequency() {
+
+        Collections.sort(contacts, new Comparator<Contact>() {
+
+            @Override
+            public int compare(Contact c1, Contact c2) {
+                return Integer.compare(
+                        c2.getContactCount(),
+                        c1.getContactCount()
+                );
+            }
+        });
+
+        System.out.println("Sorted by frequently contacted.");
+    }
 }

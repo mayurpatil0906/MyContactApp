@@ -2,10 +2,14 @@ package com.contact.main;
 
 import java.util.Scanner;
 import java.util.List;
+import java.time.LocalDateTime;
 
 import com.contact.model.Contact;
 import com.contact.service.ContactManager;
 import com.contact.user.User;
+import com.contact.filter.TagFilter;
+import com.contact.filter.DateFilter;
+import com.contact.filter.FrequentContactFilter;
 
 public class MainContact {
 
@@ -99,7 +103,8 @@ public class MainContact {
                         System.out.println("11. Search by Name");
                         System.out.println("12. Search by Phone");
                         System.out.println("13. Search by Email");
-                        System.out.println("14. Logout");
+                        System.out.println("14. Apply filter");
+                        System.out.println("15. Logout");
 
                         int opt = sc.nextInt();
                         sc.nextLine();
@@ -236,6 +241,53 @@ public class MainContact {
                             }
                         }
                         else if (opt == 14) {
+
+                            System.out.println("Filter Options:");
+                            System.out.println("1. By Tag");
+                            System.out.println("2. By Date (Last X Minutes)");
+                            System.out.println("3. Frequently Contacted");
+
+                            int fOpt = sc.nextInt();
+                            sc.nextLine();
+
+                            List<Contact> results = null;
+
+                            if (fOpt == 1) {
+
+                                System.out.print("Enter tag: ");
+                                String tag = sc.nextLine();
+
+                                results = loggedInUser.applyFilter(new TagFilter(tag));
+                            }
+                            else if (fOpt == 2) {
+
+                                System.out.print("Enter minutes: ");
+                                int minutes = sc.nextInt();
+
+                                results = loggedInUser.applyFilter(
+                                        new DateFilter(java.time.LocalDateTime.now().minusMinutes(minutes))
+                                );
+                            }
+                            else if (fOpt == 3) {
+
+                                System.out.print("Minimum contact count: ");
+                                int count = sc.nextInt();
+
+                                results = loggedInUser.applyFilter(
+                                        new FrequentContactFilter(count)
+                                );
+                            }
+
+                            if (results != null && !results.isEmpty()) {
+                                for (Contact c : results) {
+                                    c.display();
+                                    System.out.println("-------------------");
+                                }
+                            } else {
+                                System.out.println("No contacts found.");
+                            }
+                        }
+                        else if (opt == 15) {
 
                             System.out.println("Logged Out Successfully!");
                             break;
