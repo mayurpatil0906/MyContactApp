@@ -7,14 +7,13 @@ import java.util.UUID;
 
 public class Contact {
 
-    protected String id;
-    protected String name;
-    protected String phone;
-    protected String email;
-    protected LocalDateTime createdAt;
+    private String id;
+    private String name;
+    private String phone;
+    private String email;
+    private LocalDateTime createdAt;
 
-    // 🔹 Added for UC-10 & UC-11
-    private Set<String> tags = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
     private int contactCount = 0;
 
     public Contact(String name, String phone, String email) {
@@ -32,10 +31,10 @@ public class Contact {
     public String getPhone() { return phone; }
     public String getEmail() { return email; }
     public LocalDateTime getCreatedAt() { return createdAt; }
-    public Set<String> getTags() { return tags; }
+    public Set<Tag> getTags() { return tags; }
     public int getContactCount() { return contactCount; }
 
-    // ================= SETTERS WITH VALIDATION =================
+    // ================= SETTERS =================
 
     public void setName(String name) {
         if (name != null && !name.isEmpty()) {
@@ -57,27 +56,27 @@ public class Contact {
 
     // ================= TAG METHODS =================
 
-    public void addTag(String tag) {
-        if (tag != null && !tag.isEmpty()) {
+    public void addTag(Tag tag) {
+        if (tag != null) {
             tags.add(tag);
         }
     }
 
-    public void removeTag(String tag) {
+    public void removeTag(Tag tag) {
         tags.remove(tag);
     }
 
-    // ================= FREQUENCY TRACKING =================
+    // ================= FREQUENCY =================
 
     public void incrementContactCount() {
         contactCount++;
     }
-    
 
     // ================= DISPLAY =================
 
     public void display() {
-        incrementContactCount();  // increases frequency
+
+        incrementContactCount();
 
         System.out.println("ID: " + id);
         System.out.println("Name: " + name);

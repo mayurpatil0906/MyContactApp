@@ -7,19 +7,17 @@ public class Tag {
     private String name;
 
     public Tag(String name) {
-        this.name = name.toLowerCase(); // store in lowercase for consistency
+        this.name = name.toLowerCase();
     }
 
     public String getName() {
         return name;
     }
 
-    // Override equals() to prevent duplicate tags
     @Override
     public boolean equals(Object obj) {
 
         if (this == obj) return true;
-
         if (obj == null || getClass() != obj.getClass()) return false;
 
         Tag tag = (Tag) obj;
@@ -27,7 +25,6 @@ public class Tag {
         return Objects.equals(name, tag.name);
     }
 
-    // Override hashCode()
     @Override
     public int hashCode() {
         return Objects.hash(name);

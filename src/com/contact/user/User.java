@@ -2,24 +2,29 @@ package com.contact.user;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
-import com.contact.model.Tag;
 import java.util.Set;
 import java.util.HashSet;
 
 import com.contact.model.Contact;
+import com.contact.model.Tag;
 import com.contact.filter.ContactFilter;
 
 public class User {
 
+    // ================= BASIC FIELDS =================
     private String name;
     private String email;
     private String passwordHash;
-    private List<Contact> contacts = new ArrayList<>();
 
+    private List<Contact> contacts = new ArrayList<>();
+    private Set<Tag> userTags = new HashSet<>();
+
+    // ================= CONSTRUCTOR =================
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
@@ -27,16 +32,18 @@ public class User {
     }
 
     // ================= PASSWORD HASHING =================
-
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hashed = md.digest(password.getBytes());
             StringBuilder sb = new StringBuilder();
+
             for (byte b : hashed) {
                 sb.append(String.format("%02x", b));
             }
+
             return sb.toString();
+
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error hashing password");
         }
@@ -46,8 +53,7 @@ public class User {
         return passwordHash.equals(hashPassword(password));
     }
 
-    // ================= BASIC GETTERS & SETTERS =================
-
+    // ================= GETTERS & SETTERS =================
     public String getEmail() { return email; }
     public String getName() { return name; }
 
@@ -59,6 +65,11 @@ public class User {
         this.passwordHash = hashPassword(newPassword);
     }
 
+    public String getUserType() {
+        return "Normal User";
+    }
+
+    // ================= CONTACT MANAGEMENT =================
     public void addContact(Contact contact) {
         contacts.add(contact);
     }
@@ -66,12 +77,6 @@ public class User {
     public List<Contact> getContacts() {
         return contacts;
     }
-
-    public String getUserType() {
-        return "Normal User";
-    }
-
-    // ================= VIEW CONTACTS =================
 
     public void viewContacts() {
 
@@ -83,10 +88,7 @@ public class User {
         System.out.println("\n---- Your Contacts ----");
 
         for (Contact c : contacts) {
-            System.out.println("ID   : " + c.getId());
-            System.out.println("Name : " + c.getName());
-            System.out.println("Phone: " + c.getPhone());
-            System.out.println("Email: " + c.getEmail());
+            c.display();
             System.out.println("-----------------------");
         }
     }
@@ -102,8 +104,6 @@ public class User {
 
         System.out.println("Contact not found!");
     }
-
-    // ================= EDIT & DELETE =================
 
     public void editContact(String id, String newName, String newPhone, String newEmail) {
 
@@ -125,6 +125,7 @@ public class User {
     public void deleteContactById(String id) {
 
         for (int i = 0; i < contacts.size(); i++) {
+
             if (contacts.get(i).getId().equals(id)) {
                 contacts.remove(i);
                 System.out.println("Contact Deleted Successfully!");
@@ -136,7 +137,6 @@ public class User {
     }
 
     // ================= BULK OPERATIONS =================
-
     public void bulkDeleteByEmailDomain(String domain) {
 
         for (int i = 0; i < contacts.size(); i++) {
@@ -166,7 +166,7 @@ public class User {
         System.out.println("Bulk phone update completed.");
     }
 
-    public List<Contact> bulkExportAfter(java.time.LocalDateTime time) {
+    public List<Contact> bulkExportAfter(LocalDateTime time) {
 
         List<Contact> result = new ArrayList<>();
 
@@ -180,7 +180,6 @@ public class User {
     }
 
     // ================= SEARCH (UC-09) =================
-
     public List<Contact> searchByName(String name) {
 
         List<Contact> result = new ArrayList<>();
@@ -221,7 +220,6 @@ public class User {
     }
 
     // ================= UC-10 FILTERING =================
-
     public List<Contact> applyFilter(ContactFilter filter) {
 
         List<Contact> result = new ArrayList<>();
@@ -236,11 +234,9 @@ public class User {
     }
 
     // ================= SORT BY FREQUENCY =================
-
     public void sortByFrequency() {
 
         Collections.sort(contacts, new Comparator<Contact>() {
-
             @Override
             public int compare(Contact c1, Contact c2) {
                 return Integer.compare(
@@ -252,7 +248,8 @@ public class User {
 
         System.out.println("Sorted by frequently contacted.");
     }
-    private Set<Tag> userTags = new HashSet<>();
+
+    // ================= UC-11 TAG MANAGEMENT =================
     public void createTag(String tagName) {
 
         Tag tag = new Tag(tagName);
@@ -263,6 +260,7 @@ public class User {
             System.out.println("Tag already exists!");
         }
     }
+
     public void viewTags() {
 
         if (userTags.isEmpty()) {
@@ -275,6 +273,7 @@ public class User {
             System.out.println("- " + t.getName());
         }
     }
+
     public void deleteTag(String tagName) {
 
         Tag tag = new Tag(tagName);
@@ -284,5 +283,49 @@ public class User {
         } else {
             System.out.println("Tag not found!");
         }
+    }
+
+    // ================= UC-12 APPLY TAGS TO CONTACT =================
+    public void assignTagToContact(String contactId, String tagName) {
+
+        Tag tag = new Tag(tagName);
+
+        if (!userTags.contains(tag)) {
+            System.out.println("Tag does not exist! Create it first.");
+            return;
+        }
+
+        for (Contact c : contacts) {
+
+            if (c.getId().equals(contactId)) {
+
+                c.addTag(tag);
+                System.out.println("Tag assigned successfully!");
+                return;
+            }
+        }
+
+        System.out.println("Contact not found!");
+    }
+
+    public void removeTagFromContact(String contactId, String tagName) {
+
+        Tag tag = new Tag(tagName);
+
+        for (Contact c : contacts) {
+
+            if (c.getId().equals(contactId)) {
+
+                if (c.getTags().contains(tag)) {
+                    c.removeTag(tag);
+                    System.out.println("Tag removed successfully!");
+                } else {
+                    System.out.println("Contact does not have this tag.");
+                }
+                return;
+            }
+        }
+
+        System.out.println("Contact not found!");
     }
 }
